@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bressen"
+description = "Converteren van breslocaties naar bresvlakken"
+readme = "README.md"
+authors = [
+    { name = "Daniel Tollenaar", email = "daniel@d2hydro.nl" },
+]
+license = { text = "MIT" }
+
+requires-python = ">3.7,<=3.12"
+dependencies = [
+    "geopandas",
+    "pyogrio"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+tests = ["pytest"]
+
+[tool.flake8]
+max-line-length = 120
+max-complexity = 10
+
+[tool.setuptools]
+zip-safe = true
+
+[tool.setuptools.dynamic]
+version = { attr = "bressen.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["bressen"]
+
+[project.urls]
+Source = "https://github.com/d2hydro/bressen"
