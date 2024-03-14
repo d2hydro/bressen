@@ -112,6 +112,7 @@ for row in bressen_gdf.itertuples():
 
 # wegschrijven bressen
 bresvlakken_gdf = gpd.GeoDataFrame(data, crs=bressen_gdf.crs)
+bresvlakken_gdf.drop(columns="Index", inplace=True)
 bresvlakken_gdf.to_file(gpkg_out, layer="bresvlakken", engine="pyogrio")
 
 # %% toevoegen styling aan geopackage
