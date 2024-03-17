@@ -3,10 +3,10 @@ from pathlib import Path
 from bressen import read_directory, read_files
 from bressen.vlakken import aggregate_peil
 from bressen.styles import add_styles_to_geopackage
-from bressen.geometries import get_closest_feature, project_point, get_containing_feature
+from bressen.geometries import get_closest_feature, project_point, get_containing_feature, get_offsets
 import geopandas as gpd
-from shapely.geometry import LineString, Point, MultiLineString
-from shapely import ops
+from shapely.geometry import LineString, Point
+
 
 DATA_DIR = Path(r"d:\projecten\D2405.waternet.bressen\01.gegevens")
 
@@ -56,20 +56,22 @@ for row in bressen_gdf.itertuples():
     kering = get_closest_feature(row, keringen_gdf, max_distance=tolerance)
     if kering is None:
         raise ValueError(f"Geen kering gevonden binnen {tolerance} van bres met fid {row.Index}")
-    else:
-        offsets = gpd.GeoSeries([kering.geometry.parallel_offset(x1, side=side) for side in ["left", "right"]])
-        if (offsets.geom_type == "MultiLineString").any():
-            offsets = offsets.geometry.apply(lambda x: ops.linemerge(x) if isinstance(x, MultiLineString) else x)
         
     # 2. bepaal offset_locatie (1) naast watervlak (2) in laagste peilgebied (3) binnen beheergebied
 
     # haal watervlak op
     watervlak = get_closest_feature(row, water_gdf, max_distance=x1)
     if watervlak is not None: # (1) naast watervlak
-        idx = offsets.distance(watervlak.geometry).sort_values(ascending=False).index[0]
+        offset_distance = max(min(x1, watervlak.geometry.distance(row.geometry)), tolerance)
+        offsets = get_offsets(kering.geometry, offset_distance)
+        offset_points = offsets.apply(lambda x: project_point(x, row.geometry))
+        idx = offset_points.distance(watervlak.geometry).sort_values(ascending=False).index[0]
         offset_locatie = "naast watervlak"
+        if offset_distance != x1:
+            offsets = get_offsets(kering.geometry, x1)
     else:
         # zoek 1 of meerdere peilvlakken
+        offsets = get_offsets(kering.geometry, x1)
         offset_points = (project_point(line, row.geometry) for line in offsets)
         peilvlakken = [get_containing_feature(geometry, peilen_gdf) for geometry in offset_points]
         peilen = [i.peil if i is not None else None for i in peilvlakken]

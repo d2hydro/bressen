@@ -1,5 +1,7 @@
-from shapely.geometry import Point
+from shapely.geometry import Point, MultiLineString
 from shapely.geometry.base import BaseGeometry
+import geopandas as gpd
+from shapely import ops
 
 def get_geometry(row):
     if not isinstance(row, BaseGeometry):
@@ -24,11 +26,15 @@ def _sub_select_dataframe(geometry, gdf, tolerance=0.1):
 
 def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0.1):
 
+    # set tolerance
+    if max_distance is not None:
+        tolerance = max(max_distance, tolerance)
+
     #function works with Pandas row and with geometry
     geometry = get_geometry(row)
 
     # sub-select using spatial index
-    gdf_select = _sub_select_dataframe(geometry, gdf, tolerance=0.1)
+    gdf_select = _sub_select_dataframe(geometry, gdf, tolerance=tolerance)
 
     # sort by distance to geometry
     gdf_select = gdf_select.loc[gdf_select.distance(geometry).sort_values().index.to_list()]
@@ -60,5 +66,11 @@ def get_containing_feature(row, gdf):
     else:
         return gdf_select.iloc[0]
 
-def project_point(line, point):
+def project_point(line, point) -> Point:
     return line.interpolate(line.project(point))
+
+def get_offsets(line, distance) -> gpd.GeoSeries:
+    offsets = gpd.GeoSeries([line.parallel_offset(distance, side=side) for side in ["left", "right"]])
+    if (offsets.geom_type == "MultiLineString").any():
+        offsets = offsets.geometry.apply(lambda x: ops.linemerge(x) if isinstance(x, MultiLineString) else x)
+    return offsets
