@@ -42,4 +42,4 @@ pip install -e .
 Nu kun je wijzigingen van de module eenvoudig opnemen door de repository bij te werken. En beter nog, actief bijdragen aan de (door)ontwikkeling van deze module!
 
 ## Credits
-Bressen is ontwikkeld door [D2Hydro](https://d2hydro.nl/) in opdracht van [Waternet](https://www.waternet.nl/) en Open Source beschikbaar onder een <a href="https://github.com/d2hydro/bressen/blob/main/LICENSE" target="_blank">MIT licentie</a>
+Bressen is ontwikkeld door [D2Hydro](https://d2hydro.nl/) in opdracht van [Waternet](https://www.waternet.nl/) en Open Source beschikbaar onder een [MIT licentie](https://github.com/d2hydro/bressen?tab=MIT-1-ov-file)
