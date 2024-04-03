@@ -1,4 +1,4 @@
-from shapely.geometry import Point, MultiLineString
+from shapely.geometry import Point, LineString, MultiLineString
 from shapely.geometry.base import BaseGeometry
 import geopandas as gpd
 from shapely import ops
@@ -71,6 +71,8 @@ def project_point(line, point) -> Point:
 
 def get_offsets(line, distance) -> gpd.GeoSeries:
     offsets = gpd.GeoSeries([line.parallel_offset(distance, side=side) for side in ["left", "right"]])
+    if (offsets.length == 0).any():
+        raise ValueError(f"offset distance {distance} creates an empty offset")
     if (offsets.geom_type == "MultiLineString").any():
         offsets = offsets.geometry.apply(lambda x: ops.linemerge(x) if isinstance(x, MultiLineString) else x)
     return offsets
