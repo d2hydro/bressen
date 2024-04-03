@@ -3,9 +3,9 @@ Voor het werken met bressen
 
 
 ## Python environment
-Bressen gebruikt een recente versie (maart 2024) van `geopandas` en een versie van `shapely` en `pandas` groter dan 2.0. `pyogrio` wordt gebruikt voor het snel lezen en schrijven van GeoPackages.
+Bressen gebruikt een recente versie (maart 2024) van **geopandas** en een versie van **shapely** en **pandas** groter dan 2.0. De module **pyogrio** wordt gebruikt voor het efficient lezen en schrijven van GeoPackages.
 
-Wij bevelen het gebruik van `Mamba` aan voor het bouwen van Python-environments. Voor het installeren van MicroMamba zie prefix.dev: https://prefix.dev/docs/mamba/overview#installation.
+Wij bevelen het gebruik van **Mamba** aan voor het bouwen van Python-environments. Voor het installeren van **MicroMamba**, zie prefix.dev: https://prefix.dev/docs/mamba/overview#installation.
 
 Een `environment.yml` bestand moet in ieder geval de volgende inhoud bevatten:
 
@@ -27,7 +27,7 @@ micromamba env create -f environment.yml -n bressen
 ```
 
 ## Installatie bressen module
-Clone deze repository of download de main-branch lokaal. Vanuit de geactiveerde environment (in dit voorbeeld `micromamba activate bressen`) en de module-folder, waar je `pyproject.toml` vindt, installeer je de bressen-module via de command-line met:
+Clone deze repository of download de main-branch lokaal. Vanuit de geactiveerde environment (in dit voorbeeld `micromamba activate bressen`) en de module-folder (waar je `pyproject.toml` vindt) installeer je de bressen-module via de command-line met:
 
 ```cmd
 pip install .
