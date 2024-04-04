@@ -30,7 +30,7 @@ class BasisGegevens:
         """
         kwargs = {i:None for i in fiona.listlayers(file_name) if i in LAYERS}
         for layer in kwargs.keys():
-            kwargs[layer] = gpd.read_file(file_name, layer, driver="GPKG", engine="pyogrio")
+            kwargs[layer] = gpd.read_file(file_name, layer=layer, engine="pyogrio")
         return cls(**kwargs)
 
     def to_gpkg(self, gpkg_file: str):
@@ -44,6 +44,6 @@ class BasisGegevens:
         for layer in LAYERS:
             df = getattr(self, layer)
             if df is not None:
-                df.to_file(gpkg_file, layer=layer, driver="GPKG", engine="pyogrio")
+                df.to_file(gpkg_file, layer=layer, engine="pyogrio")
 
         add_styles_to_geopackage(gpkg_file)

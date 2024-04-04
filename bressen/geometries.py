@@ -2,6 +2,7 @@ from shapely.geometry import Point, LineString, MultiLineString
 from shapely.geometry.base import BaseGeometry
 import geopandas as gpd
 from shapely import ops
+from itertools import chain
 
 def get_geometry(row):
     if not isinstance(row, BaseGeometry):
@@ -24,7 +25,7 @@ def _sub_select_dataframe(geometry, gdf, tolerance=0.1):
 
     
 
-def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0.1):
+def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0.1, boundary=False):
 
     # set tolerance
     if max_distance is not None:
@@ -45,8 +46,13 @@ def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0
     else:
         result = gdf.loc[gdf_select.index[0]]
         # check max distance
-        if (max_distance is not None) and (result.geometry.distance(geometry) > max_distance):
-            result = None
+        if (max_distance is not None):
+            if boundary:
+                check_geom = result.geometry.boundary
+            else:
+                check_geom = result.geometry
+            if check_geom.distance(geometry) > max_distance:
+                result = None
 
         return result
 
@@ -69,10 +75,25 @@ def get_containing_feature(row, gdf):
 def project_point(line, point) -> Point:
     return line.interpolate(line.project(point))
 
-def get_offsets(line, distance) -> gpd.GeoSeries:
+def drop_shortests(multi_line):
+    series = gpd.GeoSeries(multi_line.geoms)
+    return series[series.length.sort_values(ascending=False).index[0]]
+
+def line_merge(line):
+    if isinstance(line, MultiLineString):
+        line = LineString(chain.from_iterable([list(i.coords) for i in line.geoms]))
+    return line
+
+def get_offsets(line, distance, check_emtpy_lines=True) -> gpd.GeoSeries:
     offsets = gpd.GeoSeries([line.parallel_offset(distance, side=side) for side in ["left", "right"]])
-    if (offsets.length == 0).any():
+    if ((offsets.length == 0).any()) and check_emtpy_lines:
         raise ValueError(f"offset distance {distance} creates an empty offset")
+
+    # try to merge lines
     if (offsets.geom_type == "MultiLineString").any():
         offsets = offsets.geometry.apply(lambda x: ops.linemerge(x) if isinstance(x, MultiLineString) else x)
+    
+    # drop smallest lines
+    if (offsets.geom_type == "MultiLineString").any():
+        offsets = offsets.geometry.apply(lambda x: drop_shortests(x) if isinstance(x, MultiLineString) else x)
     return offsets
