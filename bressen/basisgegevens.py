@@ -1,12 +1,13 @@
 from dataclasses import dataclass
+
+import fiona
 import geopandas as gpd
 from geopandas import GeoDataFrame
-from bressen.styles import add_styles_to_geopackage
-import fiona
 
-#TODO: valideren GeoDataFrame schema's met Pandera
+from bressen.styles import add_styles_to_geopackage
 
 LAYERS = ["keringen", "peilvlakken", "watervlakken"]
+
 
 @dataclass
 class BasisGegevens:
@@ -28,7 +29,7 @@ class BasisGegevens:
         BasisGegevens
             BasisGegevens from GeoPackage
         """
-        kwargs = {i:None for i in fiona.listlayers(file_name) if i in LAYERS}
+        kwargs = {i: None for i in fiona.listlayers(file_name) if i in LAYERS}
         for layer in kwargs.keys():
             kwargs[layer] = gpd.read_file(file_name, layer=layer, engine="pyogrio")
         return cls(**kwargs)
