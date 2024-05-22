@@ -26,8 +26,14 @@ Met deze environment.yml en MicroMamba bouw je je environment (we gebruiken hier
 ```cmd
 micromamba env create -f environment.yml -n bressen
 ```
-
 ## Installatie bressen module
+Vanuit de geactiveerde environment (in dit voorbeeld `micromamba activate bressen`) installeer je de bressen module met:
+
+```cmd
+pip install bressen
+```
+
+## Installatie bressen module (voor ontwikkelaars)
 Clone deze repository of download de main-branch lokaal. Vanuit de geactiveerde environment (in dit voorbeeld `micromamba activate bressen`) en de module-folder (waar je `pyproject.toml` vindt) installeer je de bressen-module via de command-line met:
 
 ```cmd

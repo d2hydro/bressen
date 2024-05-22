@@ -29,7 +29,9 @@ def _sub_select_dataframe(geometry, gdf, tolerance=0.1):
     return gdf.iloc[idx]
 
 
-def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0.1, boundary=False):
+def get_closest_feature(
+    row, gdf, max_distance: float | None = None, tolerance=0.1, boundary=False
+):
     # set tolerance
     if max_distance is not None:
         tolerance = max(max_distance, tolerance)
@@ -41,7 +43,9 @@ def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0
     gdf_select = _sub_select_dataframe(geometry, gdf, tolerance=tolerance)
 
     # sort by distance to geometry
-    gdf_select = gdf_select.loc[gdf_select.distance(geometry).sort_values().index.to_list()]
+    gdf_select = gdf_select.loc[
+        gdf_select.distance(geometry).sort_values().index.to_list()
+    ]
 
     # return feature if found and within max_distance (optional)
     if gdf_select.empty:
@@ -71,7 +75,9 @@ def get_containing_feature(row, gdf):
     if gdf_select.empty:
         return None
     elif len(gdf_select) > 1:
-        raise ValueError(f"geometry is contained by multiple features with fids {gdf.index.to_list()}")
+        raise ValueError(
+            f"geometry is contained by multiple features with fids {gdf.index.to_list()}"
+        )
     else:
         return gdf_select.iloc[0]
 
@@ -92,15 +98,21 @@ def line_merge(line):
 
 
 def get_offsets(line, distance, check_emtpy_lines=True) -> gpd.GeoSeries:
-    offsets = gpd.GeoSeries([line.parallel_offset(distance, side=side) for side in ["left", "right"]])
+    offsets = gpd.GeoSeries(
+        [line.parallel_offset(distance, side=side) for side in ["left", "right"]]
+    )
     if ((offsets.length == 0).any()) and check_emtpy_lines:
         raise EmptyOffset(f"offset distance {distance} creates an empty offset")
 
     # try to merge lines
     if (offsets.geom_type == "MultiLineString").any():
-        offsets = offsets.geometry.apply(lambda x: ops.linemerge(x) if isinstance(x, MultiLineString) else x)
+        offsets = offsets.geometry.apply(
+            lambda x: ops.linemerge(x) if isinstance(x, MultiLineString) else x
+        )
 
     # drop smallest lines
     if (offsets.geom_type == "MultiLineString").any():
-        offsets = offsets.geometry.apply(lambda x: drop_shortests(x) if isinstance(x, MultiLineString) else x)
+        offsets = offsets.geometry.apply(
+            lambda x: drop_shortests(x) if isinstance(x, MultiLineString) else x
+        )
     return offsets

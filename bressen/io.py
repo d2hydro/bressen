@@ -4,7 +4,9 @@ from pathlib import Path
 import fiona
 import pandas as pd
 
-def read_files(files: list[Path], concat: bool = True, add_layer_column: bool = True
+
+def read_files(
+    files: list[Path], concat: bool = True, add_layer_column: bool = True
 ) -> gpd.GeoDataFrame | list[gpd.GeoDataFrame]:
     """read multiple feature-files into GeoDataFrame(s)
 
@@ -46,6 +48,7 @@ def read_files(files: list[Path], concat: bool = True, add_layer_column: bool = 
         return gdf
     else:
         return gdfs
+
 
 def read_directory(
     directory: Path | str, concat: bool = True, add_layer_column: bool = True
