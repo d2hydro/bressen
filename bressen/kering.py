@@ -4,10 +4,7 @@ from shapely import ops
 from shapely.geometry import LineString, MultiLineString
 
 from bressen.geometries import get_closest_feature, line_merge
-
-
-class KeringNotFoundError(Exception):
-    pass
+from bressen.exceptions import KeringNotFoundError
 
 
 def get_kering_geometry(point, keringen, max_distance, min_length: float | None = None, max_line_extends=1):

@@ -41,8 +41,7 @@ def read_files(files: list[Path], concat: bool = True, add_layer_column: bool = 
 
     # concat to one GeoDataFrame if True
     if concat:
-        gdf = pd.concat(gdfs)
-        gdf.reset_index(inplace=True)
+        gdf = pd.concat(gdfs, ignore_index=True)
         gdf.index += 1
         return gdf
     else:

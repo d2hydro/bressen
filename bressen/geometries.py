@@ -1,8 +1,12 @@
-from shapely.geometry import Point, LineString, MultiLineString
-from shapely.geometry.base import BaseGeometry
+from itertools import chain
+
 import geopandas as gpd
 from shapely import ops
-from itertools import chain
+from shapely.geometry import LineString, MultiLineString, Point
+from shapely.geometry.base import BaseGeometry
+
+from bressen.exceptions import EmptyOffset
+
 
 def get_geometry(row):
     if not isinstance(row, BaseGeometry):
@@ -11,27 +15,26 @@ def get_geometry(row):
         geometry = row
     return geometry
 
+
 def _sub_select_dataframe(geometry, gdf, tolerance=0.1):
     # get feature bounds, buffer point with tolerance
     if isinstance(geometry, Point):
         bounds = geometry.buffer(tolerance).bounds
     else:
         bounds = geometry.bounds
-    
+
     # select with spatial index
     idx = gdf.sindex.intersection(bounds)
 
     return gdf.iloc[idx]
 
-    
 
 def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0.1, boundary=False):
-
     # set tolerance
     if max_distance is not None:
         tolerance = max(max_distance, tolerance)
 
-    #function works with Pandas row and with geometry
+    # function works with Pandas row and with geometry
     geometry = get_geometry(row)
 
     # sub-select using spatial index
@@ -46,7 +49,7 @@ def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0
     else:
         result = gdf.loc[gdf_select.index[0]]
         # check max distance
-        if (max_distance is not None):
+        if max_distance is not None:
             if boundary:
                 check_geom = result.geometry.boundary
             else:
@@ -56,15 +59,15 @@ def get_closest_feature(row, gdf, max_distance: float | None = None, tolerance=0
 
         return result
 
-def get_containing_feature(row, gdf):
 
-    #function works with Pandas row and with geometry
+def get_containing_feature(row, gdf):
+    # function works with Pandas row and with geometry
     geometry = get_geometry(row)
     gdf_select = _sub_select_dataframe(geometry, gdf, tolerance=0.1)
 
-    #further select containing features
+    # further select containing features
     gdf_select = gdf_select[gdf_select.contains(geometry)]
-    
+
     if gdf_select.empty:
         return None
     elif len(gdf_select) > 1:
@@ -72,27 +75,31 @@ def get_containing_feature(row, gdf):
     else:
         return gdf_select.iloc[0]
 
+
 def project_point(line, point) -> Point:
     return line.interpolate(line.project(point))
+
 
 def drop_shortests(multi_line):
     series = gpd.GeoSeries(multi_line.geoms)
     return series[series.length.sort_values(ascending=False).index[0]]
+
 
 def line_merge(line):
     if isinstance(line, MultiLineString):
         line = LineString(chain.from_iterable([list(i.coords) for i in line.geoms]))
     return line
 
+
 def get_offsets(line, distance, check_emtpy_lines=True) -> gpd.GeoSeries:
     offsets = gpd.GeoSeries([line.parallel_offset(distance, side=side) for side in ["left", "right"]])
     if ((offsets.length == 0).any()) and check_emtpy_lines:
-        raise ValueError(f"offset distance {distance} creates an empty offset")
+        raise EmptyOffset(f"offset distance {distance} creates an empty offset")
 
     # try to merge lines
     if (offsets.geom_type == "MultiLineString").any():
         offsets = offsets.geometry.apply(lambda x: ops.linemerge(x) if isinstance(x, MultiLineString) else x)
-    
+
     # drop smallest lines
     if (offsets.geom_type == "MultiLineString").any():
         offsets = offsets.geometry.apply(lambda x: drop_shortests(x) if isinstance(x, MultiLineString) else x)
