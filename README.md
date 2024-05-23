@@ -26,14 +26,16 @@ Met deze environment.yml en MicroMamba bouw je je environment (we gebruiken hier
 ```cmd
 micromamba env create -f environment.yml -n bressen
 ```
-## Installatie bressen module
+## Installatie
+
+### Voor gebruikers
 Vanuit de geactiveerde environment (in dit voorbeeld `micromamba activate bressen`) installeer je de bressen module met:
 
 ```cmd
 pip install bressen
 ```
 
-## Installatie bressen module (voor ontwikkelaars)
+### Voor ontwikkelaars
 Clone deze repository of download de main-branch lokaal. Vanuit de geactiveerde environment (in dit voorbeeld `micromamba activate bressen`) en de module-folder (waar je `pyproject.toml` vindt) installeer je de bressen-module via de command-line met:
 
 ```cmd
@@ -47,6 +49,11 @@ pip install -e .
 ```
 
 Nu kun je wijzigingen van de module eenvoudig opnemen door de repository bij te werken. En beter nog, actief bijdragen aan de (door)ontwikkeling van deze module!
+
+## Gebruik
+Bressen worden berekend in 2 stappen, in deze repository uitgelegd in twee Jupyter Notebooks:
+- Het verwerken van basisgegevens, zie [1_voorbereiden_data.ipynb](./notebooks/1_voorbreiden_data.ipynb)
+- Het processen van de basisgegevens, zie [2_processen_bressen.ipynb](./notebooks/2_processen_bressen.ipynb)
 
 ## Credits
 Bressen is ontwikkeld door [D2Hydro](https://d2hydro.nl/) in opdracht van [Waternet](https://www.waternet.nl/) en Open Source beschikbaar onder een [MIT licentie](https://github.com/d2hydro/bressen?tab=MIT-1-ov-file)
