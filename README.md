@@ -52,7 +52,7 @@ Nu kun je wijzigingen van de module eenvoudig opnemen door de repository bij te 
 
 ## Gebruik
 Bressen worden berekend in 2 stappen, in deze repository uitgelegd in twee Jupyter Notebooks:
-- Het verwerken van basisgegevens, zie [1_voorbereiden_data.ipynb](./notebooks/1_voorbreiden_data.ipynb)
+- Het verwerken van basisgegevens, zie [1_voorbereiden_data.ipynb](./notebooks/1_voorbereiden_data.ipynb)
 - Het processen van de basisgegevens, zie [2_processen_bressen.ipynb](./notebooks/2_processen_bressen.ipynb)
 
 ## Credits
