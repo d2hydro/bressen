@@ -14,7 +14,7 @@ channels:
   - conda-forge
  
 dependencies:
-  - python<1.13
+  - python<3.13
   - geopandas
   - pandas>2.0
   - pyogrio

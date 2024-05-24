@@ -1,0 +1,15 @@
+channels:
+  - conda-forge
+ 
+dependencies:
+  - python<3.13
+  - geopandas
+  - pyogrio
+  - shapely>2
+  - black
+  - ipykernel
+  - pandas>2.0
+  - pytest
+  - pytest-cov
+  - setuptools
+  - twine

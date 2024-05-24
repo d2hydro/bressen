@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+ 
+dependencies:
+  - python<3.13
+  - geopandas
+  - pandas>2.0
+  - pyogrio
+  - shapely>2
