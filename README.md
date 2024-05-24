@@ -7,7 +7,7 @@ Bressen gebruikt een recente versie (maart 2024) van **geopandas** en een versie
 
 Wij bevelen het gebruik van **Mamba** aan voor het bouwen van Python-environments. Voor het installeren van **MicroMamba**, zie prefix.dev: https://prefix.dev/docs/mamba/overview#installation.
 
-Een `environment.yml` bestand moet in ieder geval de volgende inhoud bevatten:
+Een [`environment.yml`](./env/environment.yml) bestand moet in ieder geval de volgende inhoud bevatten:
 
 ```yaml
 channels:
