@@ -1,5 +1,5 @@
 # Bressen
-Voor het bewerken van breslocaties voor het [Tygron Platform](https://www.tygron.com/nl). Maakt bresvlakken (polygonen) als invoer voor de overstromingsmodule op basis van breslocaties (punten) keringen (polylijnen), peilvlakken (polygonen) en watervlakken (polygonen)
+Voor het bewerken van breslocaties voor het [Tygron Platform](https://www.tygron.com/nl). Maakt bresvlakken (polygonen) als invoer voor de overstromingsmodule op basis van breslocaties (punten) keringen (polylijnen), peilvlakken (polygonen) en watervlakken (polygonen).
 
 
 ## Python environment

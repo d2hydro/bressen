@@ -1,4 +1,3 @@
-# %%
 import fiona
 
 try:
@@ -37,5 +36,3 @@ except AttributeError | ModuleNotFoundError:
 VECTOR_DRIVER_EXTENSIONS.pop("xml")
 VECTOR_DRIVER_EXTENSIONS.pop("dbf")
 VECTOR_DRIVER_EXTENSIONS.pop("shz")
-
-# %%
